@@ -1,0 +1,420 @@
+/* 新西兰自驾行程规划 - 改版样式 */
+/* 配色：蓝绿双主色、渐变、地球感 */
+
+:root {
+  --bg: #f8fafc;
+  --card-bg: rgba(254, 254, 254, 0.85);
+  --text: #2d3436;
+  --text-muted: #5a6c6d;
+  --primary-blue: #0284c7;
+  --primary-green: #2d6a4f;
+  --primary: #0284c7;
+  --primary-hover: #0369a1;
+  --primary-light: rgba(2, 132, 199, 0.12);
+  --primary-border: rgba(2, 132, 199, 0.4);
+  --gradient-earth: linear-gradient(120deg, #0284c7 0%, #0d9488 50%, #2d6a4f 100%);
+  --gradient-bg: linear-gradient(180deg, #e0f2fe 0%, #cffafe 30%, #ccfbf1 60%, #d1fae5 100%);
+  --error: #b84040;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(2, 132, 199, 0.12);
+  --shadow-soft: 0 4px 20px rgba(2, 132, 199, 0.1);
+  --font-title: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--gradient-bg);
+  background-image: url('https://images.pexels.com/photos/633198/pexels-photo-633198.jpeg?auto=compress&w=1920'), var(--gradient-bg);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(248, 250, 252, 0.72);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* P0 11.2 11.3 头部/品牌区 */
+.brand-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 28px 16px;
+}
+
+.brand-header h1 {
+  font-family: var(--font-title);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+  background: var(--gradient-earth);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 0.02em;
+}
+
+.slogan {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* P1 11.4 表单卡片 */
+.form-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.form-title {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0 0 20px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+}
+
+.form-title .section-icon,
+.result-section h3 .section-icon {
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.btn-icon {
+  width: 1em;
+  height: 1em;
+  margin-right: 8px;
+  vertical-align: -0.15em;
+}
+
+.required-fields {
+  margin-bottom: 0;
+}
+
+.form-row {
+  margin-bottom: 16px;
+}
+
+.form-row label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.required { color: var(--error); }
+
+/* P1 11.5 输入控件 - 主色呼应、hover 反馈 */
+.form-row select,
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-row select:hover,
+.form-row input:hover,
+.form-row textarea:hover {
+  border-color: var(--primary);
+}
+
+.form-row select:focus,
+.form-row input:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.form-row textarea {
+  resize: vertical;
+  min-height: 64px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.checkbox-group label {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.checkbox-group input {
+  margin-right: 6px;
+  accent-color: var(--primary);
+}
+
+/* P1 11.4 选填区视觉分隔 */
+.optional-section {
+  margin: 24px 0 0;
+  padding: 20px 0 0;
+  border-top: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+.optional-section summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--primary-blue);
+  padding: 4px 0;
+  list-style: none;
+}
+
+.optional-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.optional-section summary::before {
+  content: "▶ ";
+  font-size: 0.75rem;
+  margin-right: 4px;
+  transition: transform 0.2s;
+}
+
+.optional-section[open] summary::before {
+  transform: rotate(90deg);
+}
+
+/* P1 11.5 主按钮 - 蓝绿渐变 */
+.btn-primary {
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--gradient-earth);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-top: 20px;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* P2 11.8 加载 spinner - 主色 */
+.loading {
+  text-align: center;
+  padding: 40px;
+}
+
+.loading p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 16px;
+  border: 3px solid var(--primary-light);
+  border-top-color: var(--primary-blue);
+  border-right-color: var(--primary-green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* P2 11.8 错误提示 - 与整体风格一致 */
+.error-card {
+  background: var(--card-bg);
+  color: var(--error);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 24px;
+  border-left: 4px solid var(--error);
+}
+
+/* P1 11.6 P2 11.7 结果区 */
+.result-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.result-card h2 {
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0 0 24px;
+  background: var(--gradient-earth);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.result-section {
+  margin-top: 24px;
+}
+
+.result-section h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--text-muted);
+}
+
+/* P2 11.7 总览突出展示 - 蓝绿渐变背景 */
+#result-plan p {
+  margin: 0;
+  padding: 16px 20px;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.1) 0%, rgba(45, 106, 79, 0.12) 100%);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary-blue);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* P1 11.6 按天行程卡片 */
+.day-card {
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding: 0;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.day-card h4 {
+  margin: 0;
+  padding: 14px 18px;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 600;
+  background: var(--gradient-earth);
+  color: #fff;
+}
+
+.slot {
+  margin: 0;
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.slot:last-child {
+  border-bottom: none;
+}
+
+.slot-label {
+  display: inline-block;
+  min-width: 52px;
+  font-weight: 600;
+  color: var(--primary-blue);
+  margin-right: 8px;
+}
+
+.slot-label.slot-am,
+.slot-label.slot-eve { color: var(--primary-blue); }
+
+.slot-label.slot-pm { color: var(--primary-green); }
+
+.slot strong {
+  color: var(--text);
+}
+
+/* P2 11.7 tips 突出展示 */
+#result-tips ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#result-tips li {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.08) 0%, rgba(45, 106, 79, 0.1) 100%);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary-green);
+}
+
+#result-tips li:last-child {
+  margin-bottom: 0;
+}
+
+.hidden { display: none !important; }
+
+/* 11.9 响应式：375px、640px+ */
+@media (min-width: 375px) {
+  .container { padding: 18px; }
+}
+
+@media (min-width: 640px) {
+  .container { padding: 32px; }
+  .brand-header {
+    padding: 40px 24px;
+    margin-bottom: 40px;
+  }
+  .brand-header h1 { font-size: 2.25rem; }
+  .slogan { font-size: 1rem; }
+  .form-card,
+  .error-card,
+  .result-card { padding: 32px; }
+}

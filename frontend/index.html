@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新西兰自驾行程规划</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="brand-header">
+      <h1>新西兰自驾 · 行程规划</h1>
+      <p class="slogan">AI 定制你的新西兰自驾路线 · 峡湾、冰川、极限运动</p>
+    </header>
+
+    <main>
+      <form id="plan-form" class="form-card">
+        <h2 class="form-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          出行信息
+        </h2>
+        <div class="required-fields">
+
+        <div class="form-row">
+          <label for="landing_city">落地城市 <span class="required">*</span></label>
+          <select id="landing_city" required>
+            <option value="">请选择</option>
+            <option value="奥克兰">奥克兰</option>
+            <option value="基督城">基督城</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="region">游览区域 <span class="required">*</span></label>
+          <select id="region" required>
+            <option value="">请选择</option>
+            <option value="北岛">北岛</option>
+            <option value="南岛">南岛</option>
+            <option value="南北岛都玩">南北岛都玩</option>
+          </select>
+        </div>
+
+        <div class="form-row two-col">
+          <div>
+            <label for="month">出发月份 <span class="required">*</span></label>
+            <select id="month" required>
+              <option value="">月</option>
+              <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
+              <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+              <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
+              <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+            </select>
+          </div>
+          <div>
+            <label for="days">游玩天数 <span class="required">*</span></label>
+            <input type="number" id="days" min="1" max="100" placeholder="1-100" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="travelers">出行人数 <span class="required">*</span></label>
+          <select id="travelers" required>
+            <option value="">请选择</option>
+            <option value="1">1人</option><option value="2">2人</option><option value="3">3人</option>
+            <option value="4">4人</option><option value="5">5人</option>
+          </select>
+        </div>
+        </div>
+
+        <details class="optional-section">
+          <summary>选填信息</summary>
+          <div class="form-row">
+            <label for="landing_time">落地时间</label>
+            <select id="landing_time">
+              <option value="">未提供</option>
+              <option value="早上">早上</option>
+              <option value="下午">下午</option>
+              <option value="傍晚">傍晚</option>
+              <option value="深夜">深夜</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="departure_time">离程时间</label>
+            <select id="departure_time">
+              <option value="">未提供</option>
+              <option value="早上">早上</option>
+              <option value="下午">下午</option>
+              <option value="傍晚">傍晚</option>
+              <option value="深夜">深夜</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="styles">旅行风格（可多选，最多5个）</label>
+            <div class="checkbox-group" id="styles">
+              <label><input type="checkbox" name="style" value="自然风光"> 自然风光</label>
+              <label><input type="checkbox" name="style" value="户外冒险"> 户外冒险</label>
+              <label><input type="checkbox" name="style" value="城市探索"> 城市探索</label>
+              <label><input type="checkbox" name="style" value="文化体验"> 文化体验</label>
+              <label><input type="checkbox" name="style" value="美食之旅"> 美食之旅</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="budget_level">预算级别</label>
+            <select id="budget_level">
+              <option value="">未指定</option>
+              <option value="经济实惠">经济实惠</option>
+              <option value="舒适享受">舒适享受</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="must_see">必去清单</label>
+            <textarea id="must_see" rows="2" placeholder="如：霍比特村、米尔福德峡湾"></textarea>
+          </div>
+        </details>
+
+        <button type="submit" id="submit-btn" class="btn-primary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+          生成行程
+        </button>
+      </form>
+
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>正在生成行程，请稍候…</p>
+      </div>
+
+      <div id="error" class="error-card hidden"></div>
+
+      <div id="result" class="result-card hidden">
+        <h2 id="result-title"></h2>
+        <section id="result-plan" class="result-section"></section>
+        <section id="result-days" class="result-section"></section>
+        <section id="result-tips" class="result-section"></section>
+      </div>
+    </main>
+  </div>
+
+  <!-- 前后端分离时设置 API 地址：<script>window.API_BASE='http://localhost:8000';</script> -->
+  <script src="app.js"></script>
+</body>
+</html>

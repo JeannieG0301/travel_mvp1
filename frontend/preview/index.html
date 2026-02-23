@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新西兰自驾行程规划 · 设计预览</title>
+  <link rel="preconnect" href="https://images.pexels.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* 设计预览 - 蓝绿双主色、渐变、地球感 */
+    :root {
+      --bg: #f8fafc;
+      --card-bg: rgba(254, 254, 254, 0.85);
+      --text: #2d3436;
+      --text-muted: #5a6c6d;
+      --primary-blue: #0284c7;
+      --primary-green: #2d6a4f;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-light: rgba(2, 132, 199, 0.12);
+      --primary-border: rgba(2, 132, 199, 0.4);
+      --gradient-earth: linear-gradient(120deg, #0284c7 0%, #0d9488 50%, #2d6a4f 100%);
+      --gradient-bg: linear-gradient(180deg, #e0f2fe 0%, #cffafe 30%, #ccfbf1 60%, #d1fae5 100%);
+      --error: #b84040;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 12px rgba(2, 132, 199, 0.12);
+      --shadow-soft: 0 4px 20px rgba(2, 132, 199, 0.1);
+      --font-title: "Noto Serif SC", "Songti SC", "SimSun", serif;
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--gradient-bg);
+      background-image: url('https://images.pexels.com/photos/633198/pexels-photo-633198.jpeg?auto=compress&w=1920'), var(--gradient-bg);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(248, 250, 252, 0.72);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .preview-banner {
+      text-align: center;
+      padding: 8px 16px;
+      background: var(--gradient-earth);
+      color: #fff;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      border-radius: var(--radius-sm);
+    }
+    .brand-header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 28px 16px;
+    }
+    .brand-header h1 {
+      font-family: var(--font-title);
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin: 0 0 12px;
+      background: var(--gradient-earth);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.02em;
+    }
+    .slogan { font-size: 0.95rem; color: var(--text-muted); margin: 0; }
+    .form-card, .result-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .form-title {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin: 0 0 20px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+    }
+    .form-row { margin-bottom: 16px; }
+    .form-row label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .required { color: var(--error); }
+    .form-row select, .form-row input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 1rem;
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-row select:focus, .form-row input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .optional-section {
+      margin: 24px 0 0;
+      padding: 20px 0 0;
+      border-top: 1px solid rgba(2, 132, 199, 0.2);
+    }
+    .optional-section summary {
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--primary-blue);
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff;
+      background: var(--gradient-earth);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-top: 20px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .result-card h2 {
+      font-family: var(--font-title);
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 0 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .result-card h2 .gradient-text {
+      background: var(--gradient-earth);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .result-section { margin-top: 24px; }
+    .result-section h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 12px;
+      color: var(--text-muted);
+    }
+    .plan-overview {
+      margin: 0;
+      padding: 16px 20px;
+      background: linear-gradient(90deg, rgba(2, 132, 199, 0.1) 0%, rgba(45, 106, 79, 0.12) 100%);
+      border-radius: var(--radius-sm);
+      border-left: 4px solid var(--primary-blue);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .day-card {
+      background: #fff;
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+    .day-card h4 {
+      margin: 0;
+      padding: 14px 18px;
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 600;
+      background: var(--gradient-earth);
+      color: #fff;
+    }
+    .slot {
+      padding: 12px 18px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .slot:last-child { border-bottom: none; }
+    .slot-label { display: inline-block; min-width: 52px; font-weight: 600; margin-right: 8px; }
+    .slot-label.slot-am { color: var(--primary-blue); }
+    .slot-label.slot-pm { color: var(--primary-green); }
+    .slot-label.slot-eve { color: var(--primary-blue); }
+    .tips-list { margin: 0; padding: 0; list-style: none; }
+    .tips-list li {
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, rgba(2, 132, 199, 0.08) 0%, rgba(45, 106, 79, 0.1) 100%);
+      border-radius: var(--radius-sm);
+      border-left: 4px solid var(--primary-green);
+    }
+    .tips-list li:last-child { margin-bottom: 0; }
+    /* Icon 样式 */
+    .icon-sm { width: 1em; height: 1em; margin-right: 8px; vertical-align: -0.15em; }
+    .section-icon { width: 1.1em; height: 1.1em; margin-right: 8px; vertical-align: -0.2em; flex-shrink: 0; }
+    @media (min-width: 640px) {
+      .container { padding: 32px; }
+      .brand-header { padding: 40px 24px; margin-bottom: 40px; }
+      .brand-header h1 { font-size: 2.25rem; }
+      .slogan { font-size: 1rem; }
+      .form-card, .result-card { padding: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="preview-banner">设计预览 · 静态展示，无需 API</div>
+
+    <header class="brand-header">
+      <h1>新西兰自驾 · 行程规划</h1>
+      <p class="slogan">AI 定制你的新西兰自驾路线 · 峡湾、冰川、极限运动</p>
+    </header>
+
+    <main>
+      <form class="form-card" onsubmit="return false;">
+        <h2 class="form-title">出行信息</h2>
+        <div class="form-row">
+          <label>落地城市 <span class="required">*</span></label>
+          <select><option>奥克兰</option><option>基督城</option></select>
+        </div>
+        <div class="form-row">
+          <label>游览区域 <span class="required">*</span></label>
+          <select><option>南岛</option><option>北岛</option><option>南北岛都玩</option></select>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label>出发月份 <span class="required">*</span></label>
+            <select><option>3月</option></select>
+          </div>
+          <div>
+            <label>游玩天数 <span class="required">*</span></label>
+            <input type="number" value="7" placeholder="1-100">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>出行人数 <span class="required">*</span></label>
+          <select><option>2人</option></select>
+        </div>
+        <details class="optional-section">
+          <summary>选填信息</summary>
+          <div class="form-row">
+            <label>落地时间</label>
+            <select><option>未提供</option></select>
+          </div>
+          <div class="form-row">
+            <label>旅行风格（可多选）</label>
+            <p style="font-size:0.9rem;color:var(--text-muted)">自然风光、户外冒险、城市探索…</p>
+          </div>
+        </details>
+        <button type="submit" class="btn-primary">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+          生成行程
+        </button>
+      </form>
+
+      <div class="result-card">
+        <h2>
+          <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" style="vertical-align:-0.25em"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="gradient-text">新西兰南岛 7 日自驾行程</span>
+        </h2>
+        <section class="result-section">
+          <h3><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>行程总览</h3>
+          <p class="plan-overview">本行程从基督城落地，经蒂卡波、皇后镇、瓦纳卡至库克山，覆盖南岛精华。以自驾为主，兼顾峡湾、极限运动与自然风光，节奏适中。</p>
+        </section>
+        <section class="result-section">
+          <h3><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>按天行程</h3>
+          <div class="day-card">
+            <h4>第 1 天 · 基督城抵达</h4>
+            <div class="slot"><span class="slot-label slot-am">上午</span><strong>交通：</strong>基督城机场→市区（约15分钟）；<strong>活动：</strong>取车、入住</div>
+            <div class="slot"><span class="slot-label slot-pm">下午</span><strong>景点：</strong>基督城植物园；<strong>活动：</strong>市区游览</div>
+            <div class="slot"><span class="slot-label slot-eve">晚上</span><strong>住宿：</strong>市中心酒店</div>
+          </div>
+          <div class="day-card">
+            <h4>第 2 天 · 蒂卡波湖</h4>
+            <div class="slot"><span class="slot-label slot-am">上午</span><strong>交通：</strong>基督城→蒂卡波湖（约3小时）；<strong>景点：</strong>好牧羊人教堂、蒂卡波湖</div>
+            <div class="slot"><span class="slot-label slot-pm">下午</span><strong>活动：</strong>观星准备、湖边徒步</div>
+            <div class="slot"><span class="slot-label slot-eve">晚上</span><strong>住宿：</strong>蒂卡波湖畔</div>
+          </div>
+          <div class="day-card">
+            <h4>第 3 天 · 皇后镇</h4>
+            <div class="slot"><span class="slot-label slot-am">上午</span><strong>交通：</strong>蒂卡波→皇后镇（约3.5小时）；<strong>活动：</strong>入住、Skyline 缆车</div>
+            <div class="slot"><span class="slot-label slot-pm">下午</span><strong>景点：</strong>瓦卡蒂普湖；<strong>活动：</strong>可选喷气快艇、蹦极</div>
+            <div class="slot"><span class="slot-label slot-eve">晚上</span><strong>住宿：</strong>皇后镇湖畔</div>
+          </div>
+        </section>
+        <section class="result-section">
+          <h3><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>注意事项</h3>
+          <ul class="tips-list">
+            <li>3 月旺季，米尔福德峡湾游船建议提前在 DOC 网站预约</li>
+            <li>山区可能降温，建议准备防风防水外套和徒步鞋</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
