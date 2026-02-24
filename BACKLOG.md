@@ -142,7 +142,7 @@
 |---|------|------|------|
 | 12 | 上线部署：供朋友测试 | 项目经理分配 | 配置完成，待执行平台部署 |
 
-**#12 说明**：配置与文档已就绪。待人工执行：1）推送到 GitHub；2）在 Render 或 Railway 创建 Web Service；3）添加 DEEPSEEK_API_KEY；4）部署成功后汇报公网 URL。详见 DEPLOY.md「开发团队执行部署」。
+**#12 说明**：配置与文档已就绪；本地 Git 已就绪（main 分支、.gitignore、PUSH_TO_GITHUB.md）。待项目负责人：1）在 GitHub 新建 travel_mvp1 仓库；2）`git remote add origin` + `git push`；3）在 Render/Railway 创建服务、配置 DEEPSEEK_API_KEY；4）部署成功后汇报公网 URL。详见 PUSH_TO_GITHUB.md、DEPLOY.md。
 
 ---
 
@@ -182,6 +182,7 @@
 | 2026-02-22 | #11 Web UI 改版：新西兰/自然系配色、Noto Serif SC 标题、slogan、表单/结果区样式优化 |
 | 2026-02-23 | #12 上线部署配置：Procfile、render.yaml、runtime.txt、DEPLOY.md（开发团队） |
 | 2026-02-23 | #12 DEPLOY.md 更新：「开发团队执行部署」章节、前置条件、Render 速查表（开发团队） |
+| 2026-02-23 | #12 本地 Git 就绪：git init/add/commit、main 分支、.gitignore、PUSH_TO_GITHUB.md（开发团队）；待项目负责人创建仓库并 push |
 
 ---
 
