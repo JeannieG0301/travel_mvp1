@@ -38,10 +38,19 @@ function hideLoading() {
 }
 
 
-function showError(msg) {
-  errorEl.textContent = msg;
+function showError(msg, code) {
+  var html = '<span class="error-msg">' + escapeHtml(msg) + '</span>';
+  if (window.lastSubmitData) {
+    html += ' <button type="button" id="btn-retry" class="btn-retry">重试</button>';
+  }
+  errorEl.innerHTML = html;
   errorEl.classList.remove('hidden');
   resultEl.classList.add('hidden');
+  if (window.lastSubmitData) {
+    document.getElementById('btn-retry').addEventListener('click', function () {
+      doSubmit(window.lastSubmitData);
+    });
+  }
 }
 
 window.currentPlan = null;
@@ -159,23 +168,33 @@ function copyShareLink() {
 document.getElementById('btn-export-pdf').addEventListener('click', exportPdf);
 document.getElementById('btn-share-link').addEventListener('click', copyShareLink);
 
-form.addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const data = collectFormData();
+async function doSubmit(data) {
+  window.lastSubmitData = data;
   showLoading();
-
   try {
     const res = await fetch(API_BASE + '/api/generate-plan', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-    const json = await res.json();
-
+    var json;
+    try {
+      json = await res.json();
+    } catch (parseErr) {
+      // 502/503 等可能返回非 JSON（如 HTML），按超时/不可用处理，仍展示重试
+      if (!res.ok && (res.status === 502 || res.status === 503 || res.status === 504)) {
+        showError('生成超时或服务暂时不可用，请点击重试', 'TIMEOUT');
+      } else {
+        showError('服务返回异常，请点击重试', 'NETWORK_ERROR');
+      }
+      return;
+    }
     if (!res.ok) {
-      const code = json.code;
-      let msg;
-      if (code === 'NETWORK_ERROR' || code === 'TIMEOUT') {
+      var code = json.code;
+      var msg;
+      if (code === 'TIMEOUT') {
+        msg = '生成超时，请点击重试';
+      } else if (code === 'NETWORK_ERROR') {
         msg = '网络或服务暂时不可用，可以稍后刷新页面再试。';
       } else if (code === 'DEEPSEEK_ERROR') {
         msg = '上游服务暂时不可用，请稍后再试。';
@@ -184,15 +203,20 @@ form.addEventListener('submit', async function (e) {
       } else {
         msg = json.error || '请求失败，请稍后再试。';
       }
-      // 控制台保留更详细的信息，便于调试
       console.error('API error', code, json.error);
-      showError(msg);
+      showError(msg, code);
       return;
     }
     showResult(json);
   } catch (err) {
-    showError('网络错误：' + (err.message || '请检查 API 是否已启动'));
+    // 网络断开、CORS、或 res.json() 在 try 外抛错等
+    showError('网络错误，请点击重试', 'NETWORK_ERROR');
   } finally {
     hideLoading();
   }
+}
+
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
+  doSubmit(collectFormData());
 });

@@ -33,8 +33,9 @@ _client = OpenAI(
     base_url="https://api.deepseek.com",
 )
 
-DEFAULT_DEEPSEEK_TIMEOUT = int(os.getenv("DEEPSEEK_TIMEOUT_SECONDS", "30"))
-DEFAULT_DEEPSEEK_MAX_RETRIES = int(os.getenv("DEEPSEEK_RETRY_MAX", "2"))
+# 默认 120s 覆盖冷启动+生成；Render 免费版约 30s 请求上限，可在环境变量设 25 以先返回 TIMEOUT 并依赖前端重试
+DEFAULT_DEEPSEEK_TIMEOUT = int(os.getenv("DEEPSEEK_TIMEOUT_SECONDS", "120"))
+DEFAULT_DEEPSEEK_MAX_RETRIES = int(os.getenv("DEEPSEEK_RETRY_MAX", "1"))
 DEFAULT_DEEPSEEK_RETRY_BASE_DELAY = float(
     os.getenv("DEEPSEEK_RETRY_BASE_DELAY", "1.0")
 )
