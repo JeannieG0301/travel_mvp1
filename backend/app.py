@@ -3,6 +3,9 @@
 import sys
 from pathlib import Path
 
+# 启动时立即打日志，便于 Render 部署排查超时
+print("backend.app: loading...", flush=True)
+
 from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -17,6 +20,7 @@ from src.types import UserInput
 from src.lib.llm import generate_plan, DeepSeekError
 from backend.share_store import save_plan, get_plan
 
+print("backend.app: imports done", flush=True)
 app = FastAPI(title="新西兰行程规划 API")
 
 app.add_middleware(
