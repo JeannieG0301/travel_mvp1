@@ -14,7 +14,8 @@ if str(root) not in sys.path:
     sys.path.insert(0, str(root))
 
 from src.types import UserInput
-from src.lib.llm import generate_plan
+from src.lib.llm import generate_plan, DeepSeekError
+from backend.share_store import save_plan, get_plan
 
 app = FastAPI(title="新西兰行程规划 API")
 
@@ -48,9 +49,40 @@ def api_generate_plan(body: dict = Body(...)) -> dict:
 
     try:
         result = generate_plan(user_input)
-        return result
-    except ValueError as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        share_id = save_plan(result)
+        out = {**result, "share_id": share_id}
+        return out
+    except DeepSeekError as e:
+        code = e.code
+        if code in ("NETWORK_ERROR", "TIMEOUT"):
+            status = 503
+            msg = "服务暂时不可用，请稍后重试"
+        elif code == "DEEPSEEK_ERROR":
+            status = 502
+            msg = "上游服务异常，请稍后重试"
+        elif code == "JSON_DECODE_ERROR":
+            status = 502
+            msg = "生成结果异常，请稍后重试"
+        elif code == "VALIDATION_ERROR":
+            status = 500
+            msg = "生成结果结构不合法，请稍后重试"
+        else:
+            status = 500
+            msg = "未知错误，请稍后重试"
+
+        return JSONResponse(
+            status_code=status,
+            content={"error": msg, "code": code},
+        )
+
+
+@app.get("/api/plans/{share_id}")
+def api_get_plan(share_id: str):
+    """根据 share_id 返回行程 JSON；不存在或已过期返回 404。"""
+    plan = get_plan(share_id)
+    if plan is None:
+        return JSONResponse(status_code=404, content={"error": "链接已过期或不存在"})
+    return plan
 
 
 # 托管 frontend 静态文件（开发/生产均可）

@@ -1,4 +1,8 @@
-"""行程可读性格式化。按 OUTPUT_FORMAT_SPEC 将 plan dict 转为可读文本。"""
+"""行程可读性格式化。按 OUTPUT_FORMAT_SPEC 将 plan dict 转为可读文本。
+
+与规范对齐：顶层 title/plan/days/tips；单日 day + morning/afternoon/evening；
+时段 transport/sights/activities/accommodation 四字段顺序一致，导出/分享内容与此一致。
+"""
 
 
 def _format_time_slot(slot: dict, label: str) -> str:

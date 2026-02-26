@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 output_plan.json
 output_plan.txt
+data/

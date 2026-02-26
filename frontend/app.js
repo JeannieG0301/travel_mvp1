@@ -10,17 +10,33 @@ const loading = document.getElementById('loading');
 const errorEl = document.getElementById('error');
 const resultEl = document.getElementById('result');
 
+var STAGES = ['正在规划路线…', '正在安排每日行程…', '正在整理注意事项…'];
+
 function showLoading() {
   loading.classList.remove('hidden');
   errorEl.classList.add('hidden');
   resultEl.classList.add('hidden');
   submitBtn.disabled = true;
+  var stageEl = document.getElementById('loading-stage');
+  stageEl.textContent = '';
+  var idx = 0;
+  stageEl.dataset.intervalId = setInterval(function () {
+    stageEl.textContent = STAGES[idx % STAGES.length];
+    idx += 1;
+  }, 4000).toString();
 }
 
 function hideLoading() {
+  var stageEl = document.getElementById('loading-stage');
+  if (stageEl && stageEl.dataset.intervalId) {
+    clearInterval(parseInt(stageEl.dataset.intervalId, 10));
+    stageEl.dataset.intervalId = '';
+  }
+  stageEl.textContent = '';
   loading.classList.add('hidden');
   submitBtn.disabled = false;
 }
+
 
 function showError(msg) {
   errorEl.textContent = msg;
@@ -28,7 +44,10 @@ function showError(msg) {
   resultEl.classList.add('hidden');
 }
 
+window.currentPlan = null;
+
 function showResult(plan) {
+  window.currentPlan = plan;
   errorEl.classList.add('hidden');
   document.getElementById('result-title').textContent = plan.title || '行程';
   document.getElementById('result-plan').innerHTML = '<h3><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>行程总览</h3><p>' + escapeHtml(plan.plan || '') + '</p>';
@@ -40,13 +59,13 @@ function showResult(plan) {
       const label = { morning: '上午', afternoon: '下午', evening: '晚上' }[slotName];
       const slotClass = { morning: 'slot-am', afternoon: 'slot-pm', evening: 'slot-eve' }[slotName];
       const slot = d[slotName] || {};
-      const items = [];
-      if (slot.transport) items.push('<strong>交通：</strong>' + escapeHtml(slot.transport));
-      if (slot.sights) items.push('<strong>景点：</strong>' + escapeHtml(slot.sights));
-      if (slot.activities) items.push('<strong>活动：</strong>' + escapeHtml(slot.activities));
-      if (slot.accommodation) items.push('<strong>住宿：</strong>' + escapeHtml(slot.accommodation));
-      if (items.length) html += '<div class="slot"><span class="slot-label ' + slotClass + '">' + label + '</span>' + items.join('；') + '</div>';
-      else html += '<div class="slot"><span class="slot-label ' + slotClass + '">' + label + '</span>无安排</div>';
+      const lines = [];
+      if (slot.transport) lines.push('<span class="slot-line"><strong>交通：</strong>' + escapeHtml(slot.transport) + '</span>');
+      if (slot.sights) lines.push('<span class="slot-line"><strong>景点：</strong>' + escapeHtml(slot.sights) + '</span>');
+      if (slot.activities) lines.push('<span class="slot-line"><strong>活动：</strong>' + escapeHtml(slot.activities) + '</span>');
+      if (slot.accommodation) lines.push('<span class="slot-line"><strong>住宿：</strong>' + escapeHtml(slot.accommodation) + '</span>');
+      if (lines.length) html += '<div class="slot"><span class="slot-label ' + slotClass + '">' + label + '</span><div class="slot-body">' + lines.join('') + '</div></div>';
+      else html += '<div class="slot"><span class="slot-label ' + slotClass + '">' + label + '</span><div class="slot-body">无安排</div></div>';
     });
     html += '</div>';
     daysHtml.push(html);
@@ -63,6 +82,13 @@ function showResult(plan) {
     document.getElementById('result-tips').classList.add('hidden');
   }
 
+  var shareBtn = document.getElementById('btn-share-link');
+  if (plan.share_id) {
+    shareBtn.classList.remove('hidden');
+    shareBtn.dataset.shareId = plan.share_id;
+  } else {
+    shareBtn.classList.add('hidden');
+  }
   resultEl.classList.remove('hidden');
   resultEl.scrollIntoView({ behavior: 'smooth' });
 }
@@ -94,6 +120,45 @@ function collectFormData() {
   };
 }
 
+function exportPdf() {
+  var plan = window.currentPlan;
+  var el = document.getElementById('result');
+  if (!el || !plan) return;
+  var clone = el.cloneNode(true);
+  var actions = clone.querySelector('.result-actions');
+  if (actions) actions.remove();
+  var opt = {
+    margin: 12,
+    filename: (plan.title || '行程').replace(/[\\/:*?"<>|]/g, '_') + '.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  if (typeof html2pdf !== 'undefined') {
+    html2pdf().set(opt).from(clone).save();
+  }
+}
+
+function copyShareLink() {
+  var btn = document.getElementById('btn-share-link');
+  var id = btn && btn.dataset.shareId;
+  if (!id) return;
+  var path = (window.location.pathname || '/').replace(/\/?index\.html$/i, '') || '/';
+  if (!path.endsWith('/')) path = path.replace(/\/?$/, '/');
+  var url = (window.location.origin || '') + path + 'share.html?id=' + id;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function () {
+      btn.textContent = '已复制链接';
+      setTimeout(function () { btn.textContent = '分享链接'; }, 2000);
+    });
+  } else {
+    prompt('复制以下链接分享：', url);
+  }
+}
+
+document.getElementById('btn-export-pdf').addEventListener('click', exportPdf);
+document.getElementById('btn-share-link').addEventListener('click', copyShareLink);
+
 form.addEventListener('submit', async function (e) {
   e.preventDefault();
   const data = collectFormData();
@@ -108,7 +173,20 @@ form.addEventListener('submit', async function (e) {
     const json = await res.json();
 
     if (!res.ok) {
-      showError(json.error || '请求失败');
+      const code = json.code;
+      let msg;
+      if (code === 'NETWORK_ERROR' || code === 'TIMEOUT') {
+        msg = '网络或服务暂时不可用，可以稍后刷新页面再试。';
+      } else if (code === 'DEEPSEEK_ERROR') {
+        msg = '上游服务暂时不可用，请稍后再试。';
+      } else if (code === 'JSON_DECODE_ERROR' || code === 'VALIDATION_ERROR') {
+        msg = '生成行程结果异常，请稍后再试。';
+      } else {
+        msg = json.error || '请求失败，请稍后再试。';
+      }
+      // 控制台保留更详细的信息，便于调试
+      console.error('API error', code, json.error);
+      showError(msg);
       return;
     }
     showResult(json);

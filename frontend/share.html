@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>行程分享</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="brand-header">
+      <h1>新西兰自驾 · 行程分享</h1>
+      <p class="slogan">只读查看</p>
+    </header>
+    <main>
+      <div id="loading" class="loading">加载中…</div>
+      <div id="error" class="error-card hidden"></div>
+      <div id="result" class="result-card hidden">
+        <h2 id="result-title"></h2>
+        <section id="result-plan" class="result-section"></section>
+        <section id="result-days" class="result-section"></section>
+        <section id="result-tips" class="result-section"></section>
+      </div>
+    </main>
+  </div>
+  <script>
+    (function () {
+      var API_BASE = typeof window !== 'undefined' && window.API_BASE !== undefined ? window.API_BASE : '';
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id');
+      var loading = document.getElementById('loading');
+      var errorEl = document.getElementById('error');
+      var resultEl = document.getElementById('result');
+
+      function escapeHtml(s) {
+        var div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      function render(plan) {
+        document.getElementById('result-title').textContent = plan.title || '行程';
+        document.getElementById('result-plan').innerHTML = '<h3>行程总览</h3><p>' + escapeHtml(plan.plan || '') + '</p>';
+        var daysHtml = [];
+        (plan.days || []).forEach(function (d) {
+          var html = '<div class="day-card"><h4>第 ' + d.day + ' 天</h4>';
+          ['morning', 'afternoon', 'evening'].forEach(function (slotName) {
+            var label = { morning: '上午', afternoon: '下午', evening: '晚上' }[slotName];
+            var slotClass = { morning: 'slot-am', afternoon: 'slot-pm', evening: 'slot-eve' }[slotName];
+            var slot = d[slotName] || {};
+            var lines = [];
+            if (slot.transport) lines.push('<span class="slot-line"><strong>交通：</strong>' + escapeHtml(slot.transport) + '</span>');
+            if (slot.sights) lines.push('<span class="slot-line"><strong>景点：</strong>' + escapeHtml(slot.sights) + '</span>');
+            if (slot.activities) lines.push('<span class="slot-line"><strong>活动：</strong>' + escapeHtml(slot.activities) + '</span>');
+            if (slot.accommodation) lines.push('<span class="slot-line"><strong>住宿：</strong>' + escapeHtml(slot.accommodation) + '</span>');
+            if (lines.length) html += '<div class="slot"><span class="slot-label ' + slotClass + '">' + label + '</span><div class="slot-body">' + lines.join('') + '</div></div>';
+            else html += '<div class="slot"><span class="slot-label ' + slotClass + '">' + label + '</span><div class="slot-body">无安排</div></div>';
+          });
+          html += '</div>';
+          daysHtml.push(html);
+        });
+        document.getElementById('result-days').innerHTML = '<h3>按天行程</h3>' + daysHtml.join('');
+        var tips = plan.tips || [];
+        if (tips.length) {
+          document.getElementById('result-tips').innerHTML = '<h3>注意事项</h3><ul>' + tips.map(function (t) { return '<li>' + escapeHtml(t) + '</li>'; }).join('') + '</ul>';
+          document.getElementById('result-tips').classList.remove('hidden');
+        } else {
+          document.getElementById('result-tips').innerHTML = '';
+          document.getElementById('result-tips').classList.add('hidden');
+        }
+        loading.classList.add('hidden');
+        errorEl.classList.add('hidden');
+        resultEl.classList.remove('hidden');
+      }
+
+      if (!id) {
+        loading.classList.add('hidden');
+        errorEl.textContent = '缺少分享链接参数';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+      fetch(API_BASE + '/api/plans/' + encodeURIComponent(id))
+        .then(function (r) {
+          if (!r.ok) {
+            if (r.status === 404) throw new Error('链接已过期或不存在');
+            throw new Error('加载失败');
+          }
+          return r.json();
+        })
+        .then(render)
+        .catch(function (err) {
+          loading.classList.add('hidden');
+          errorEl.textContent = err.message || '加载失败';
+          errorEl.classList.remove('hidden');
+        });
+    })();
+  </script>
+</body>
+</html>

@@ -85,6 +85,14 @@ body::before {
   line-height: 1.5;
 }
 
+/* 17.4 首屏冷启动提示 */
+.cold-start-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 10px 0 0;
+  line-height: 1.4;
+}
+
 /* P1 11.4 表单卡片 */
 .form-card {
   background: var(--card-bg);
@@ -264,6 +272,12 @@ body::before {
   margin: 0;
 }
 
+.loading-stage {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
 .spinner {
   width: 44px;
   height: 44px;
@@ -310,15 +324,19 @@ body::before {
   color: transparent;
 }
 
+/* 19.2 结果区层次：与 formatter 可读格式对齐 */
 .result-section {
-  margin-top: 24px;
+  margin-top: 28px;
 }
-
+.result-section:first-of-type {
+  margin-top: 0;
+}
 .result-section h3 {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 12px;
-  color: var(--text-muted);
+  margin: 0 0 14px;
+  color: var(--text);
+  font-family: var(--font-title);
 }
 
 /* P2 11.7 总览突出展示 - 蓝绿渐变背景 */
@@ -354,8 +372,9 @@ body::before {
 
 .slot {
   margin: 0;
-  padding: 12px 18px;
+  padding: 14px 18px;
   font-size: 0.9rem;
+  line-height: 1.65;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -375,6 +394,17 @@ body::before {
 .slot-label.slot-eve { color: var(--primary-blue); }
 
 .slot-label.slot-pm { color: var(--primary-green); }
+
+.slot-body {
+  display: inline-block;
+  vertical-align: top;
+  max-width: calc(100% - 60px);
+}
+.slot-body .slot-line {
+  display: block;
+  margin-top: 4px;
+}
+.slot-body .slot-line:first-child { margin-top: 0; }
 
 .slot strong {
   color: var(--text);
@@ -397,6 +427,53 @@ body::before {
 
 #result-tips li:last-child {
   margin-bottom: 0;
+}
+
+/* 17.6 国内用户说明 */
+.domestic-notice {
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.7);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary-green);
+}
+.domestic-notice summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text);
+  list-style: none;
+}
+.domestic-notice summary::-webkit-details-marker { display: none; }
+.domestic-notice summary::before { content: "▶ "; font-size: 0.75rem; margin-right: 4px; }
+.domestic-notice[open] summary::before { content: "▼ "; }
+.domestic-notice p {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* 17.2 结果区操作按钮 */
+.result-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.btn-secondary {
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--primary-light);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-secondary:hover {
+  background: rgba(2, 132, 199, 0.18);
+  border-color: var(--primary);
 }
 
 .hidden { display: none !important; }

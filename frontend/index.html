@@ -14,6 +14,7 @@
     <header class="brand-header">
       <h1>新西兰自驾 · 行程规划</h1>
       <p class="slogan">AI 定制你的新西兰自驾路线 · 峡湾、冰川、极限运动</p>
+      <p class="cold-start-hint">首次打开约需 20～30 秒，请稍候</p>
     </header>
 
     <main>
@@ -124,12 +125,22 @@
 
       <div id="loading" class="loading hidden">
         <div class="spinner"></div>
-        <p>正在生成行程，请稍候…</p>
+        <p class="loading-time">约需 1 分钟内，请稍候</p>
+        <p id="loading-stage" class="loading-stage"></p>
       </div>
 
       <div id="error" class="error-card hidden"></div>
 
+      <details class="domestic-notice">
+        <summary>国内用户说明</summary>
+        <p>本服务部署在海外，国内访问可能不稳定。若链接无法打开，可尝试：换浏览器、关闭安全软件误报、换网络或使用 VPN。</p>
+      </details>
+
       <div id="result" class="result-card hidden">
+        <div class="result-actions">
+          <button type="button" id="btn-export-pdf" class="btn-secondary">导出 PDF</button>
+          <button type="button" id="btn-share-link" class="btn-secondary hidden">分享链接</button>
+        </div>
         <h2 id="result-title"></h2>
         <section id="result-plan" class="result-section"></section>
         <section id="result-days" class="result-section"></section>
@@ -139,6 +150,7 @@
   </div>
 
   <!-- 前后端分离时设置 API 地址：<script>window.API_BASE='http://localhost:8000';</script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
 </html>
